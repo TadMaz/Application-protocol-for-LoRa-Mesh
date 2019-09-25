@@ -1,7 +1,7 @@
 #include "util.h"
 
-bool Util::isBroadcastMessage(uint8_t* data){
-    return data[0] == 1;
+bool Util::isBroadcastMessage(uint8_t* buffer){
+    return (buffer[0] & 0b111) == 1;
 }
 
 uint8_t Util::combineBits (uint8_t msb, uint8_t lsb){

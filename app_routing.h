@@ -15,7 +15,7 @@ class AppRouter
 
     AppRouter();
     ~AppRouter();
-    void addRoute(uint8_t* data, uint16_t rssi);
+    void addRoute(uint16_t destinationID, uint16_t rssi, uint8_t distanceToGateway);
     void getBestRoute();
     int updateTable(int32_t destID, int16_t rssi, uint8_t distToGateway);
     void getRouteTo(int id);

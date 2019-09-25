@@ -22,11 +22,7 @@ AppRouter::~AppRouter(){
     delete[] DistanceToGateway;
 }
 
-void AppRouter::addRoute(uint8_t* data, uint16_t rssi){
-    
-    uint8_t distanceToGateway = Util::combineBits(data[5],data[6]);
-    uint32_t destinationID = Util::combineBits(Util::combineBits(data[1],data[2]),
-                                Util::combineBits(data[3],data[4]));
+void AppRouter::addRoute(uint16_t destinationID, uint16_t rssi, uint8_t distanceToGateway){
     
     // If entry exists, update the Relative Signal Strength
     int position = AppRouter::contains(destinationID);
