@@ -4,6 +4,10 @@ bool Util::isBroadcastMessage(uint8_t* buffer){
     return (buffer[0] & 0b111) == 1;
 }
 
+bool Util::isVibrationSignature(uint8_t* buffer){
+    return (char)buffer[0] == '2';
+}
+
 uint8_t Util::combineBits (uint8_t msb, uint8_t lsb){
     
     if(lsb<10){
