@@ -20,6 +20,7 @@ class Tx
                                        int16_t accZ, float pitch,
                                        float roll, uint8_t* buffer,
                                        int* bufferIndex);
+    void static writeMessageTypeToBuffer(int msgType, uint8_t* buffer, int position);
     void static packFloat(float number, uint8_t* buffer, int* bufferIndex);
     void static packInt16_t(int16_t number, uint8_t* buffer, int* bufferIndex);
     void static sendMessageToNode();

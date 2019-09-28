@@ -2,6 +2,7 @@
 
 //Define Message Types
 #define BROADCAST_MESSAGE 1
+#define VIBRATION_SIGNATURE_MESSAGE 2
 #define BROADCAST_MESSAGE_LENGTH 4
 
 //Define Payload Structure for Broadcast Message
@@ -12,6 +13,8 @@
 //Define Message Structure for all Gateway Messages
 #define SOURCE_ID_START 0
 #define DESTINATION_ID_START 2
+#define VIBR_MSG_START 4
+#define VIBRATION_SIGN_START 5
 #define MAX_NO_OF_READINGS 11               // Each reading is 22 bytes, Available space = 255 - 4(RFM95 Header) - 5(Header) = 246 Bytes 
 
 //Define Bit Masks for byte packing
