@@ -22,14 +22,92 @@ void Tx::constructBroadcastMessage(uint8_t* result){
 }
 
 void Tx::constructVibrationMessage(uint8_t * output){
+    
+    //                         | SOURCE ID | DESTINATION ID | MSG TYPE | PAYLOAD |
 
-    // dummy sensor data
-    uint8_t data[] = {"20201"
-                        "14066967,3.46,38,-24,140,1.76,-1.40;"
-                        "14066974,3.46,-44,-12,148,1.68,-1.48;"
-                        "14066984,3.46,-45,5,151,1.68,-1.48"
-                        "14066995,3.46,-36,18,156,1.68,-1.47;"
-                        "14067005,3.46,-12,29,147,1.69,-1.48;"
-                        "14067015,3.46,17,32,138,1.69,-1.47;"}; 
-    output = data;
+    //Write the Source ID and Destination ID to Buffer 
+    //Source ID uses first 2 bytes ; Destination ID follows after
+    
+    writeNodeIdToBuffer(NODE_ID, output, SOURCE_ID_START);
+    writeNodeIdToBuffer(2, output, DESTINATION_ID_START);
+
+    // Write Payload to Buffer 
+    writePayloadToBuffer(output);
+}
+
+void Tx::writeNodeIdToBuffer(uint16_t nodeId, uint8_t* buffer, int position){
+
+    //Node ID : 0b | 0000 0000 | 0000 0001 |
+
+    buffer[position] = nodeId>>8;
+    buffer[position +1] = nodeId & ((uint16_t)(BYTE_MASK));
+
+}
+
+void Tx::writePayloadToBuffer(uint8_t* buffer){
+
+    // Define the dummy data to be sent 
+
+    float timestamp[MAX_NO_OF_READINGS] = {14066967,14066974,14066984,14066995,14067005,14067015,
+                            14067024,14067035,14067045,14067055,14067064};
+    float windspeed[MAX_NO_OF_READINGS] = {3.46, 3.46, 3.46, 3.46 ,3.46 ,3.46 ,3.46 ,3.46 ,3.46 ,3.46 ,3.46};
+    int16_t accX[MAX_NO_OF_READINGS] = {38,-44,-45,-36,-12 ,17 ,44 ,61, 68 ,83 ,95 };
+    int16_t accY [MAX_NO_OF_READINGS] = {-24,-12, 5, 18, 29 ,32, 26 ,23, 39 ,62 ,77};
+    int16_t accZ[MAX_NO_OF_READINGS] = {140,148,151,156,147,138,138,137,141,131,132};
+    float pitch [MAX_NO_OF_READINGS] = {1.76,1.68,1.68,1.68,1.69,1.69,1.7,1.71,1.71,1.72, 1.73 };
+    float roll [MAX_NO_OF_READINGS] = {-1.4,-1.48,-1.48,-1.47,-1.48,-1.47,-1.47,-1.47,-1.46 ,-1.46,-1.45};
+
+    //Convert readings into bytes and pack
+    int bufferIndex = 0;
+
+    for (char i = 0; i<MAX_NO_OF_READINGS; i++){
+        
+       writeVibrationReadingToBuffer(   timestamp[i],
+                                        windspeed[i],
+                                        accX[i],
+                                        accY[i],
+                                        accZ[i],
+                                        pitch[i],
+                                        roll[i],
+                                        buffer,
+                                        &bufferIndex
+                                    );
+    }
+}
+
+void Tx::writeVibrationReadingToBuffer(float timestamp, float windspeed,
+                                       int16_t accX, int16_t accY,
+                                       int16_t accZ, float pitch,
+                                       float roll, uint8_t* buffer,
+                                       int* bufferIndex){
+
+    
+    packFloat(timestamp, buffer, bufferIndex);
+    packFloat(windspeed, buffer, bufferIndex);
+    packInt16_t(accX, buffer, bufferIndex);
+    packInt16_t(accY, buffer, bufferIndex );
+    packInt16_t(accZ, buffer, bufferIndex);
+    packFloat(pitch, buffer, bufferIndex);
+    packFloat(roll, buffer, bufferIndex);
+
+}
+
+void Tx::packFloat(float number, uint8_t* buffer, int* bufferIndex){
+    
+    uint8_t bytes [4];
+    
+    *(float*)(bytes) = number;          //Convert float to bytes
+
+    //Pack bytes into the buffer
+    for (char j = 0 ; j<4; j++){
+        buffer[*bufferIndex] = bytes[j];
+        *bufferIndex++;
+    }
+}
+
+void  Tx::packInt16_t(int16_t number, uint8_t* buffer, int* bufferIndex){
+    
+    //0b 0000 0000 | 0000 0001 |
+    buffer[*bufferIndex++] = (number & ((int16_t)BYTE_MASK<<8)) >> 8;
+    buffer[*bufferIndex++] = (number & BYTE_MASK);
 }

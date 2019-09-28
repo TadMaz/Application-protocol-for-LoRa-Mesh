@@ -8,6 +8,10 @@ bool Util::isVibrationSignature(uint8_t* buffer){
     return (char)buffer[0] == '2';
 }
 
+bool Util::matchIDs(uint8_t* buffer){
+    return (char) buffer[4] == '1';
+}
+
 uint8_t Util::combineBits (uint8_t msb, uint8_t lsb){
     
     if(lsb<10){
@@ -19,3 +23,8 @@ uint8_t Util::combineBits (uint8_t msb, uint8_t lsb){
     return msb*1000 + lsb;          //shift three times
 
 }
+
+void Util::convertToBytes(float number, uint8_t* result){
+    *(float*)(result) = number;
+}
+
