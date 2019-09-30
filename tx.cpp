@@ -28,7 +28,7 @@ void Tx::constructVibrationMessage(uint8_t * output){
     //Write the Source ID, Destination ID and Message Type to Buffer 
     //Source ID uses first 2 bytes ; Destination ID follows after
 
-    writeNodeIdToBuffer((uint16_t)NODE_ID, output, SOURCE_ID_START);
+    writeNodeIdToBuffer(NODE_ID, output, SOURCE_ID_START);
     writeNodeIdToBuffer(2, output, DESTINATION_ID_START);
     writeMessageTypeToBuffer(VIBRATION_SIGNATURE_MESSAGE, output, VIBR_MSG_START);
     // Write Payload to Buffer 
@@ -62,7 +62,7 @@ void Tx::writePayloadToBuffer(uint8_t* buffer){
     float roll [MAX_NO_OF_READINGS] = {-1.4,-1.48,-1.48,-1.47,-1.48,-1.47,-1.47,-1.47,-1.46 ,-1.46,-1.45};
 
     //Convert readings into bytes and pack
-    int bufferIndex = 0;
+    int bufferIndex = VIBRATION_SIGN_START;
 
     for (char i = 0; i<MAX_NO_OF_READINGS; i++){
         
@@ -104,14 +104,14 @@ void Tx::packFloat(float number, uint8_t* buffer, int* bufferIndex){
 
     //Pack bytes into the buffer
     for (char j = 0 ; j<4; j++){
-        buffer[*bufferIndex] = bytes[j];
-        *bufferIndex++;
+        buffer[(*bufferIndex)++] = bytes[j];
+
     }
 }
 
 void  Tx::packInt16_t(int16_t number, uint8_t* buffer, int* bufferIndex){
     
     //0b 0000 0000 | 0000 0001 |
-    buffer[*bufferIndex++] = ( number >> 8 );
-    buffer[*bufferIndex++] = (number & BYTE_MASK);
+    buffer[(*bufferIndex)++] = ( number >> 8 );
+    buffer[(*bufferIndex)++] = (number & (uint16_t)0xFF);
 }

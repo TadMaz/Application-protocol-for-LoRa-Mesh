@@ -12,9 +12,12 @@ class Rx
     public:
     
     uint32_t static extractBroadcastMessage(uint8_t* buffer,uint16_t rssi, AppRouter* router);
-    
+
     void static extractVibrationSignature(uint8_t* buffer, uint16_t* sourceId, uint16_t* destId,
-                                          uint8_t* msgType);
+                                   uint8_t* msgType,float* timestamp, float* windspeed,
+                                   int16_t* accX, int16_t* accY,
+                                   int16_t* accZ, float* pitch,
+                                   float* roll);
 
     void static readNodeIdFromBuffer(uint16_t* nodeId, uint8_t* buffer, int position);
 
@@ -22,7 +25,7 @@ class Rx
                                        int16_t* accX, int16_t* accY,
                                        int16_t* accZ, float* pitch,
                                        float* roll, uint8_t* buffer,
-                                       int* bufferIndex, int numberofReadings);
+                                       int numberofReadings);
 
     void static readVibrationReadingFromBuffer(float* timestamp, float* windspeed,
                                        int16_t* accX, int16_t* accY,

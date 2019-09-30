@@ -22,7 +22,10 @@ uint32_t Rx::extractBroadcastMessage(uint8_t* buffer,uint16_t rssi, AppRouter* r
 }
 
 void Rx::extractVibrationSignature(uint8_t* buffer, uint16_t* sourceId, uint16_t* destId,
-                                   uint8_t* msgType){
+                                   uint8_t* msgType,float* timestamp, float* windspeed,
+                                   int16_t* accX, int16_t* accY,
+                                   int16_t* accZ, float* pitch,
+                                   float* roll){
 
    //read the Source ID and Destination ID
     readNodeIdFromBuffer(sourceId, buffer, SOURCE_ID_START);
@@ -31,7 +34,11 @@ void Rx::extractVibrationSignature(uint8_t* buffer, uint16_t* sourceId, uint16_t
     //read the Message Type
     readMessageTypeFromBuffer(msgType, buffer, VIBR_MSG_START);
 
+   
     //read the payload
+    readPayloadFromBuffer(timestamp,windspeed,
+                         accX, accY, accZ,
+                         pitch, roll, buffer,MAX_NO_OF_READINGS);
 }
 
 void Rx::readNodeIdFromBuffer(uint16_t* nodeId, uint8_t* buffer, int position){
@@ -44,16 +51,17 @@ void Rx::readMessageTypeFromBuffer(uint8_t* msgType, uint8_t* buffer, int positi
     *msgType = buffer[position];
 } 
 void Rx::readPayloadFromBuffer(float* timestamp, float* windspeed,
-                                       int16_t* accX, int16_t* accY,
-                                       int16_t* accZ, float* pitch,
-                                       float* roll, uint8_t* buffer,
-                                       int* bufferIndex, int numberofReadings){
+                                int16_t* accX, int16_t* accY,
+                                int16_t* accZ, float* pitch,
+                                float* roll, uint8_t* buffer,
+                                int numberofReadings){
     //Go through Buffer and unpack  bytes for the different types.
     //Store the different types in arrays 
     if (numberofReadings>MAX_NO_OF_READINGS) return;
 
+    int bufferIndex = VIBRATION_SIGN_START;
     // for each reading, copy the value to these arrays
-    for (char i = 0; i<numberofReadings; i++){
+    for (int i = 0; i<numberofReadings; i++){
 
         readVibrationReadingFromBuffer( &timestamp[i],
                                         &windspeed[i],
@@ -63,12 +71,11 @@ void Rx::readPayloadFromBuffer(float* timestamp, float* windspeed,
                                         &pitch[i],
                                         &roll[i],
                                         &buffer[i],
-                                        bufferIndex
+                                        &bufferIndex
                                       );
+        bufferIndex--;
     }
     
-    
-
 }
 
 void Rx::readVibrationReadingFromBuffer(float* timestamp, float* windspeed,
@@ -92,16 +99,12 @@ void Rx::unpackFloat(float* number, uint8_t* buffer, int* bufferIndex){
     uint8_t bytes[4];
 
     //Read the number in byte-form from the buffer
-    for (char i = 0; i<4; i++){
-        bytes[i] = buffer[*bufferIndex];
-        *bufferIndex++;
-    }  
+    for (char i = 0; i<4; i++) bytes[i] = buffer[(*bufferIndex)++]; 
 
     *number = *(float*)(bytes);  // convert bytes back to float
 }
 
 void Rx::unpackInt16_t(int16_t* number, uint8_t* buffer, int* bufferIndex){
 
-    *number = (int16_t) ( buffer[*bufferIndex] << 8 ) | buffer[*bufferIndex+1] ;
-    *bufferIndex+=2;
+    *number = ( (uint16_t)buffer[(*bufferIndex)++]) <<8 | ((uint16_t)buffer[(*bufferIndex)++]);
 }
