@@ -28,11 +28,11 @@ void Rx::extractVibrationSignature(uint8_t* buffer, uint16_t* sourceId, uint16_t
                                    float* roll){
 
    //read the Source ID and Destination ID
-    readNodeIdFromBuffer(sourceId, buffer, SOURCE_ID_START);
-    readNodeIdFromBuffer(destId, buffer, DESTINATION_ID_START);
+    Util::readNodeIdFromBuffer(sourceId, buffer, SOURCE_ID_START);
+    Util::readNodeIdFromBuffer(destId, buffer, DESTINATION_ID_START);
 
     //read the Message Type
-    readMessageTypeFromBuffer(msgType, buffer, VIBR_MSG_START);
+    Util::readMessageTypeFromBuffer(msgType, buffer, VIBR_MSG_START);
 
    
     //read the payload
@@ -41,15 +41,7 @@ void Rx::extractVibrationSignature(uint8_t* buffer, uint16_t* sourceId, uint16_t
                          pitch, roll, buffer,MAX_NO_OF_READINGS);
 }
 
-void Rx::readNodeIdFromBuffer(uint16_t* nodeId, uint8_t* buffer, int position){
 
-    /// buffer[pos] | buffer [pos+1]
-    *nodeId = (uint16_t)(buffer[position]<<8) | (uint16_t)(buffer[position+1]) ;
-}
-
-void Rx::readMessageTypeFromBuffer(uint8_t* msgType, uint8_t* buffer, int position){
-    *msgType = buffer[position];
-} 
 void Rx::readPayloadFromBuffer(float* timestamp, float* windspeed,
                                 int16_t* accX, int16_t* accY,
                                 int16_t* accZ, float* pitch,

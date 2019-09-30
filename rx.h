@@ -5,6 +5,7 @@
 #include "node_config.h"
 #include "messages.h"
 #include "app_routing.h"
+#include "util.h"
 
 
 class Rx
@@ -19,7 +20,7 @@ class Rx
                                    int16_t* accZ, float* pitch,
                                    float* roll);
 
-    void static readNodeIdFromBuffer(uint16_t* nodeId, uint8_t* buffer, int position);
+    
 
     void static readPayloadFromBuffer(float* timestamp, float* windspeed,
                                        int16_t* accX, int16_t* accY,
@@ -32,8 +33,6 @@ class Rx
                                        int16_t* accZ, float* pitch,
                                        float* roll, uint8_t* buffer,
                                        int* bufferIndex);
-
-    void static readMessageTypeFromBuffer(uint8_t* msgType, uint8_t* buffer, int position);
 
     void static unpackFloat(float* number, uint8_t* buffer, int* bufferIndex);
 

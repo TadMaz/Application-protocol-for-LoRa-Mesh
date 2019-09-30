@@ -28,24 +28,11 @@ void Tx::constructVibrationMessage(uint8_t * output){
     //Write the Source ID, Destination ID and Message Type to Buffer 
     //Source ID uses first 2 bytes ; Destination ID follows after
 
-    writeNodeIdToBuffer(NODE_ID, output, SOURCE_ID_START);
-    writeNodeIdToBuffer(2, output, DESTINATION_ID_START);
-    writeMessageTypeToBuffer(VIBRATION_SIGNATURE_MESSAGE, output, VIBR_MSG_START);
+    Util::writeNodeIdToBuffer(NODE_ID, output, SOURCE_ID_START);
+    Util::writeNodeIdToBuffer(2, output, DESTINATION_ID_START);
+    Util::writeMessageTypeToBuffer(VIBRATION_SIGNATURE_MESSAGE, output, VIBR_MSG_START);
     // Write Payload to Buffer 
     writePayloadToBuffer(output);
-}
-
-void Tx::writeNodeIdToBuffer(uint16_t nodeId, uint8_t* buffer, int position){
-
-    //Node ID : 0b | 0000 0000 | 0000 0001 |
-
-    buffer[position] = nodeId>>8;
-    buffer[position +1] = nodeId & ((uint16_t)(BYTE_MASK));
-
-}
-
-void Tx::writeMessageTypeToBuffer(int msgType, uint8_t* buffer, int position){
-    buffer[position] = msgType;
 }
 
 void Tx::writePayloadToBuffer(uint8_t* buffer){
