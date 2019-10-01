@@ -6,7 +6,7 @@ bool Util::isBroadcastMessage(uint8_t* buffer){
 
 bool Util::isVibrationSignature(uint8_t* buffer){
     uint8_t msgType;
-    readMessageTypeFromBuffer(&msgType, buffer, VIBR_MSG_START);
+    readMessageTypeFromBuffer(&msgType, buffer, GATEWAY_MSG_TYPE_START);
     return msgType == VIBRATION_SIGNATURE_MESSAGE;
 }
 
@@ -37,5 +37,16 @@ void Util::writeNodeIdToBuffer(uint16_t nodeId, uint8_t* buffer, int position){
 
 void Util::writeMessageTypeToBuffer(int msgType, uint8_t* buffer, int position){
     buffer[position] = msgType;
+}
+
+uint8_t Util:: getBatteryStatus(){
+    /* This method returns the Node Battery Status 
+                The node has 4 battery life modes 
+                0b00 - Critical Power <= 20 %
+                0b01 - Low Power : >20 %
+                0b10 - Medium Power : > 50 %
+                0b11 - Full  : >75% */
+    
+    return (uint8_t) 3;
 }
 

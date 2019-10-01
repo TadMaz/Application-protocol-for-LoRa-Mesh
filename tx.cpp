@@ -21,6 +21,8 @@ void Tx::constructBroadcastMessage(uint8_t* result){
 
 }
 
+
+
 void Tx::constructVibrationMessage(uint8_t * output){
     
     //                         | SOURCE ID | DESTINATION ID | MSG TYPE | PAYLOAD |
@@ -30,12 +32,27 @@ void Tx::constructVibrationMessage(uint8_t * output){
 
     Util::writeNodeIdToBuffer(NODE_ID, output, SOURCE_ID_START);
     Util::writeNodeIdToBuffer(2, output, DESTINATION_ID_START);
-    Util::writeMessageTypeToBuffer(VIBRATION_SIGNATURE_MESSAGE, output, VIBR_MSG_START);
+    Util::writeMessageTypeToBuffer(VIBRATION_SIGNATURE_MESSAGE, output, GATEWAY_MSG_TYPE_START);
     // Write Payload to Buffer 
-    writePayloadToBuffer(output);
+    writeVibrationPayloadToBuffer(output);
 }
 
-void Tx::writePayloadToBuffer(uint8_t* buffer){
+void Tx::constructHeartbeatMessage(uint8_t* output, uint16_t destinationID){
+
+    //                          | SOURCE ID | DESTINATION ID | MSG TYPE | PAYLOAD |
+
+    Util::writeNodeIdToBuffer(NODE_ID, output, SOURCE_ID_START);
+    Util::writeNodeIdToBuffer(destinationID, output, DESTINATION_ID_START);
+    Util::writeMessageTypeToBuffer(HEARTBEAT_MESSAGE, output, GATEWAY_MSG_TYPE_START);
+    
+}
+
+void Tx::writeHeartbeatPayloadToBuffer(uint8_t* buffer){
+    
+    buffer[GATEWAY_MSG_PAYLOAD_START] = Util::getBatteryStatus();
+}
+
+void Tx::writeVibrationPayloadToBuffer(uint8_t* buffer){
 
     // Define the dummy data to be sent 
 
@@ -49,7 +66,7 @@ void Tx::writePayloadToBuffer(uint8_t* buffer){
     float roll [MAX_NO_OF_READINGS] = {-1.4,-1.48,-1.48,-1.47,-1.48,-1.47,-1.47,-1.47,-1.46 ,-1.46,-1.45};
 
     //Convert readings into bytes and pack
-    int bufferIndex = VIBRATION_SIGN_START;
+    int bufferIndex = GATEWAY_MSG_PAYLOAD_START;
 
     for (char i = 0; i<MAX_NO_OF_READINGS; i++){
         
@@ -90,10 +107,7 @@ void Tx::packFloat(float number, uint8_t* buffer, int* bufferIndex){
     *(float*)(bytes) = number;          //Convert float to bytes
 
     //Pack bytes into the buffer
-    for (char j = 0 ; j<4; j++){
-        buffer[(*bufferIndex)++] = bytes[j];
-
-    }
+    for (char j = 0 ; j<4; j++){  buffer[(*bufferIndex)++] = bytes[j]; }
 }
 
 void  Tx::packInt16_t(int16_t number, uint8_t* buffer, int* bufferIndex){

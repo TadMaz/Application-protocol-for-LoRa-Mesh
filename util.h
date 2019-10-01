@@ -16,5 +16,6 @@ class Util{
     void static readMessageTypeFromBuffer(uint8_t* msgType, uint8_t* buffer, int position);
     void static writeMessageTypeToBuffer(int msgType, uint8_t* buffer, int position);
     void static writeNodeIdToBuffer(uint16_t nodeId, uint8_t* buffer, int position);
+    uint8_t static getBatteryStatus();
 };
 #endif

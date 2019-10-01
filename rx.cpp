@@ -32,7 +32,7 @@ void Rx::extractVibrationSignature(uint8_t* buffer, uint16_t* sourceId, uint16_t
     Util::readNodeIdFromBuffer(destId, buffer, DESTINATION_ID_START);
 
     //read the Message Type
-    Util::readMessageTypeFromBuffer(msgType, buffer, VIBR_MSG_START);
+    Util::readMessageTypeFromBuffer(msgType, buffer, GATEWAY_MSG_TYPE_START);
 
    
     //read the payload
