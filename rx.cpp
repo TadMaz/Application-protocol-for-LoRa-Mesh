@@ -51,7 +51,7 @@ void Rx::readPayloadFromBuffer(float* timestamp, float* windspeed,
     //Store the different types in arrays 
     if (numberofReadings>MAX_NO_OF_READINGS) return;
 
-    int bufferIndex = VIBRATION_SIGN_START;
+    int bufferIndex = GATEWAY_MSG_PAYLOAD_START;
     // for each reading, copy the value to these arrays
     for (int i = 0; i<numberofReadings; i++){
 

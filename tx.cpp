@@ -100,6 +100,11 @@ void Tx::writeVibrationReadingToBuffer(float timestamp, float windspeed,
 
 }
 
+void sendMessageToNode(uint16_t destinationID){
+
+    //change the destination ID of the message 
+}
+
 void Tx::packFloat(float number, uint8_t* buffer, int* bufferIndex){
     
     uint8_t bytes [4];

@@ -10,20 +10,22 @@ class AppRouter
     public:
 
     int16_t* Rssi;
-    uint32_t* DestinationID ;
+    uint16_t* DestinationID ;
     uint8_t* DistanceToGateway;
 
     AppRouter();
     ~AppRouter();
     void addRoute(uint16_t destinationID, uint16_t rssi, uint8_t distanceToGateway);
     void getBestRoute();
-    int updateTable(int32_t destID, int16_t rssi, uint8_t distToGateway);
-    void getRouteTo(int id);
-    int contains(uint32_t destID);
-    int hasFreePosition();
-    int16_t getRssiAt(int index);
-    uint32_t getDestinationIDAt(int index);
-    uint8_t getDistanceToGatewayAt(int index);
+    uint8_t getWorstRoute();
+    void updateTable(int16_t destID, int16_t rssi, uint8_t distToGateway);
+    void getRouteTo(uint16_t  id);
+    uint8_t contains(uint16_t destID);
+    uint8_t  hasFreePosition();
+    int16_t getRssiAt(uint8_t index);
+    uint8_t getDestinationIDAt(uint8_t index);
+    uint8_t getDistanceToGatewayAt(uint8_t index);
+    void resetRoutingTable();
 };
 
 #endif
