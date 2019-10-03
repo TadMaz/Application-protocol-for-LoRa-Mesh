@@ -12,7 +12,7 @@ class Rx
 {
     public:
     
-    uint32_t static extractBroadcastMessage(uint8_t* buffer,uint16_t rssi, AppRouter* router);
+    uint16_t static extractBroadcastMessage(uint8_t* buffer,uint16_t rssi, AppRouter* router);
 
     void static extractVibrationSignature(uint8_t* buffer, uint16_t* sourceId, uint16_t* destId,
                                    uint8_t* msgType,float* timestamp, float* windspeed,

@@ -13,7 +13,7 @@ class Tx
 
     void static constructBroadcastMessage(uint8_t* result);
     void static constructHeartbeatMessage(uint8_t* result, uint16_t destinationID);
-    void static constructVibrationMessage(uint8_t* buf);
+    void static constructVibrationMessage(uint8_t* buf, uint16_t destID);
     void static writeNodeIdToBuffer(uint16_t nodeId, uint8_t* buffer, int position);
     void static writeVibrationPayloadToBuffer(uint8_t* buffer);
     void static writeVibrationReadingToBuffer(float timestamp, float windspeed,

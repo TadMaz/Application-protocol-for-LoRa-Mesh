@@ -22,7 +22,7 @@ AppRouter::~AppRouter(){
     delete[] DistanceToGateway;
 }
 
-void AppRouter::addRoute(uint16_t destinationID, uint16_t rssi, uint8_t distanceToGateway){
+void AppRouter::addRoute(uint16_t destinationID, int16_t rssi, uint8_t distanceToGateway){
     
     // If entry exists, update the Relative Signal Strength
     int position = AppRouter::contains(destinationID);
@@ -46,7 +46,7 @@ void AppRouter::addRoute(uint16_t destinationID, uint16_t rssi, uint8_t distance
 
 }
 
-uint8_t AppRouter::contains(uint16_t destID){
+int AppRouter::contains(uint16_t destID){
 
     for(char i = 0; i< ROUTER_TABLE_LENGTH; i++){
         if(DestinationID[i] == destID)
@@ -55,7 +55,7 @@ uint8_t AppRouter::contains(uint16_t destID){
     return -1;
 }
 
-uint8_t  AppRouter::hasFreePosition(){
+int  AppRouter::hasFreePosition(){
     for (char i = 0; i< ROUTER_TABLE_LENGTH; i++){
         if(DestinationID[i] == 0)
             return (uint8_t )i;
@@ -66,17 +66,22 @@ uint8_t  AppRouter::hasFreePosition(){
 void AppRouter::updateTable(int16_t destID, int16_t rssi, uint8_t distToGateway){
 
     uint8_t indexOfWorst = getWorstRoute();
-  
+    
+    if (indexOfWorst == ROUTER_TABLE_LENGTH) return;
+
+    //check if this reading is better than the worst
+    if(distToGateway > DistanceToGateway[indexOfWorst]) return;
+
     DestinationID[indexOfWorst] = destID;
     Rssi[indexOfWorst] = rssi;
     DistanceToGateway[indexOfWorst] = distToGateway;
     
 }
 
-int16_t AppRouter::getRssiAt(uint8_t index){
+int AppRouter::getRssiAt(uint8_t index){
     if (index > ROUTER_TABLE_LENGTH || index <0)
         return -1;
-    return Rssi[index];
+    return (int) Rssi[index];
 }
 
 uint8_t AppRouter::getDestinationIDAt(uint8_t index){
@@ -94,19 +99,61 @@ uint8_t AppRouter::getDistanceToGatewayAt(uint8_t index){
 uint8_t AppRouter::getWorstRoute(){
 
     uint8_t index_of_worst = ROUTER_TABLE_LENGTH;
+    //Worst route has largest Rssi/dist_to_gateway ratio
+    int worstDistance = -10000;
 
-    for (char i = 0; i<(ROUTER_TABLE_LENGTH -1); i++){ 
-        if(Rssi[i]/DistanceToGateway[i]< Rssi[i+1]/DistanceToGateway[i+1]){
+    for (char i = 0; i < ROUTER_TABLE_LENGTH; i++){
+        if (DistanceToGateway[i] == 0) continue;
+
+        // if same distance from gateway -  choose one with better signal strength
+        if(DistanceToGateway[i] == worstDistance && Rssi[i] <= Rssi[index_of_worst] ){
+            worstDistance = DistanceToGateway[i];
             index_of_worst = i;
             continue;
         }
-        index_of_worst = i+1;
+        
+        // The worst route is one that is furthest from the gateway.
+        if(DistanceToGateway[i] > worstDistance){
+            worstDistance = DistanceToGateway[i];
+            index_of_worst = i;
+        }
+        
     }
     return index_of_worst;
+
+}
+
+uint8_t AppRouter::getBestRoute(){
+
+    uint8_t index_of_best = ROUTER_TABLE_LENGTH;
+    int bestDistance = 10000;
+
+    //Best route has is closest to gateway
+    for (char i = 0; i < ROUTER_TABLE_LENGTH; i++){
+        if (DistanceToGateway[i] == 0) continue;
+
+        // if same distance from gateway -  choose one with better signal strength
+        if(DistanceToGateway[i] == bestDistance && Rssi[i] <= Rssi[index_of_best] ){
+            bestDistance = DistanceToGateway[i];
+            index_of_best = i;
+        }
+        
+        // The worst route is one that is furthest from the gateway.
+        if(DistanceToGateway[i] < bestDistance){
+            bestDistance = DistanceToGateway[i];
+            index_of_best = i;
+        } 
+    }
+    return index_of_best;
+}
+
+uint16_t AppRouter::getBestDestination(){
+    if (getBestRoute() == ROUTER_TABLE_LENGTH) return 0;
+    return DestinationID[getBestRoute()];
 }
 
 void AppRouter::resetRoutingTable(){
-    
+
     for (int i = 0; i<ROUTER_TABLE_LENGTH; i++){
         Rssi[i] = 0;
         DestinationID[i] = 0;

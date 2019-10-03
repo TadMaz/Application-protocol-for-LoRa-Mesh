@@ -15,14 +15,15 @@ class AppRouter
 
     AppRouter();
     ~AppRouter();
-    void addRoute(uint16_t destinationID, uint16_t rssi, uint8_t distanceToGateway);
-    void getBestRoute();
+    void addRoute(uint16_t destinationID, int16_t rssi, uint8_t distanceToGateway);
+    uint8_t getBestRoute();
     uint8_t getWorstRoute();
+    uint16_t getBestDestination();
     void updateTable(int16_t destID, int16_t rssi, uint8_t distToGateway);
     void getRouteTo(uint16_t  id);
-    uint8_t contains(uint16_t destID);
-    uint8_t  hasFreePosition();
-    int16_t getRssiAt(uint8_t index);
+    int contains(uint16_t destID);
+    int  hasFreePosition();
+    int getRssiAt(uint8_t index);
     uint8_t getDestinationIDAt(uint8_t index);
     uint8_t getDistanceToGatewayAt(uint8_t index);
     void resetRoutingTable();
