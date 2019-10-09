@@ -46,7 +46,7 @@ uint8_t Util:: getBatteryStatus(){
                 0b01 - Low Power : >20 %
                 0b10 - Medium Power : > 50 %
                 0b11 - Full  : >75% */
-    
+                
     return (uint8_t) 3;
 }
 

@@ -21,8 +21,6 @@ void Tx::constructBroadcastMessage(uint8_t* result){
 
 }
 
-
-
 void Tx::constructVibrationMessage(uint8_t * output, uint16_t destID){
     
     //                         | SOURCE ID | DESTINATION ID | MSG TYPE | PAYLOAD |
@@ -49,6 +47,7 @@ void Tx::constructHeartbeatMessage(uint8_t* output, uint16_t destinationID){
 
 void Tx::writeHeartbeatPayloadToBuffer(uint8_t* buffer){
     
+
     buffer[GATEWAY_MSG_PAYLOAD_START] = Util::getBatteryStatus();
 }
 
@@ -89,7 +88,6 @@ void Tx::writeVibrationReadingToBuffer(float timestamp, float windspeed,
                                        float roll, uint8_t* buffer,
                                        int* bufferIndex){
 
-    
     packFloat(timestamp, buffer, bufferIndex);
     packFloat(windspeed, buffer, bufferIndex);
     packInt16_t(accX, buffer, bufferIndex);
