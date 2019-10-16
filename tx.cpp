@@ -42,7 +42,7 @@ void Tx::constructHeartbeatMessage(uint8_t* output, uint16_t destinationID){
     Util::writeNodeIdToBuffer(NODE_ID, output, SOURCE_ID_START);
     Util::writeNodeIdToBuffer(destinationID, output, DESTINATION_ID_START);
     Util::writeMessageTypeToBuffer(HEARTBEAT_MESSAGE, output, GATEWAY_MSG_TYPE_START);
-    
+    writeHeartbeatPayloadToBuffer(output);
 }
 
 void Tx::writeHeartbeatPayloadToBuffer(uint8_t* buffer){
